@@ -1,1 +1,1 @@
-{"version":3,"file":"ExpoEncryptor.types.js","sourceRoot":"","sources":["../src/ExpoEncryptor.types.ts"],"names":[],"mappings":"","sourcesContent":["export type ExpoEncryptorViewProps = {\n  name: string;\n};\n"]}
+{"version":3,"file":"ExpoEncryptor.types.js","sourceRoot":"","sources":["../src/ExpoEncryptor.types.ts"],"names":[],"mappings":"","sourcesContent":["export type ExpoEncryptorViewProps = {\n  name: string;\n};\n\nexport type ExpoEncryptorEncryptionResult = {\n  encryptedText: string;\n  nonce: string;\n  key: string;\n  tag: string;\n}\n"]}
