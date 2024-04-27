@@ -30,6 +30,15 @@ public class ExpoEncryptorModule: Module {
             }
         }
         
+        AsyncFunction("encryptWithPublicKey") { (key: String, message: String, promise: Promise) in
+            do {
+                let result = try CoreCryptor.encryptWithPublicKey(plainText: message, publicKeyString: key)
+                promise.resolve(result)
+            } catch {
+                promise.reject(error)
+            }
+        }
+        
         // Enables the module to be used as a native view. Definition components that are accepted as part of the
         // view definition: Prop, Events.
         View(ExpoEncryptorView.self) {

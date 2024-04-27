@@ -14,4 +14,8 @@ export async function decryptWithSymmKey(encryptedText: string, ivString: string
   return await ExpoEncryptorModule.decryptWithSymmKey(encryptedText, ivString, symmKey, tag);
 }
 
+export async function encryptWithPublicKey(key: string, plainText: string): Promise<string> {
+  return await ExpoEncryptorModule.encryptWithPublicKey(key, plainText);
+}
+
 export { ExpoEncryptorView, ExpoEncryptorViewProps };

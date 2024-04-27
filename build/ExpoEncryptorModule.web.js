@@ -6,6 +6,9 @@ export default {
     },
     decryptWithSymmKey(encryptedText, ivString, symmKey, tag) {
         return "decrypted Text";
+    },
+    encryptWithPublicKey(key, plainText) {
+        return "encryptedText with public key";
     }
 };
 //# sourceMappingURL=ExpoEncryptorModule.web.js.map

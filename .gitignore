@@ -2,10 +2,6 @@
 #
 .DS_Store
 
-*.DS_Store
-example/
-package-lock.json
-
 # VSCode
 .vscode/
 jsconfig.json

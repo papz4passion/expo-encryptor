@@ -9,5 +9,9 @@ export default {
   },
   decryptWithSymmKey(encryptedText: string, ivString: string, symmKey: string, tag: string) {
     return "decrypted Text";
+  },
+
+  encryptWithPublicKey(key: string, plainText: string) {
+    return "encryptedText with public key";
   }
 };

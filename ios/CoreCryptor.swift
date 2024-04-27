@@ -77,6 +77,52 @@ class CoreCryptor: NSObject {
         }
         return decryptedText
     }
+    
+    class func encryptWithPublicKey(plainText: String, publicKeyString: String) throws -> String {
+
+        guard let publicKey = publicKeyFromString(base64String: publicKeyString) else {
+            throw EncryptionError.invalidInput
+        }
+        
+        guard let data = plainText.data(using: .utf8) else {
+            throw EncryptionError.invalidInput
+        }
+        
+        let algorithm: SecKeyAlgorithm = .rsaEncryptionOAEPSHA256
+        guard SecKeyIsAlgorithmSupported(publicKey, .encrypt, algorithm) else {
+            throw EncryptionError.invalidInput
+        }
+        
+        var error: Unmanaged<CFError>?
+        guard let encrypted = SecKeyCreateEncryptedData(publicKey,
+                                                         algorithm,
+                                                         data as CFData,
+                                                         &error) as? Data else {
+            throw EncryptionError.encryptionFailed
+        }
+        
+        return encrypted.base64EncodedString()
+    }
+    
+    private class func publicKeyFromString(base64String: String) -> SecKey? {
+        guard let data = Data(base64Encoded: base64String) else {
+            print("Error: Can't create data from Base64 string")
+            return nil
+        }
+        
+        let keyDict: [CFString: Any] = [
+            kSecAttrKeyType: kSecAttrKeyTypeRSA,
+            kSecAttrKeyClass: kSecAttrKeyClassPublic,
+            kSecAttrKeySizeInBits: NSNumber(value: 2048),
+            kSecReturnPersistentRef: true as CFBoolean
+        ]
+        
+        guard let key = SecKeyCreateWithData(data as CFData, keyDict as CFDictionary, nil) else {
+            print("Error: Can't create key from data")
+            return nil
+        }
+        return key
+    }
 }
 
 // Extension to convert hex string to Data
