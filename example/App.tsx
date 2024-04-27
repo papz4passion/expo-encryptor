@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TextInput, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, SafeAreaView, ScrollView } from 'react-native';
 import React, { useState } from 'react';
 
 import * as ExpoEncryptor from 'expo-encryptor';
@@ -6,12 +6,13 @@ import * as ExpoEncryptor from 'expo-encryptor';
 export default function App() {
   const [text, setText] = useState('');
   const [key, setKey] = useState('');
-  
+
   const [encrypted, setEncrypted] = useState('');
   const [nonce, setNonce] = useState('');
   const [tag, setTag] = useState('');
   const [decrypted, setDecrypted] = useState('');
-
+ 
+  const [secondText, setSecondText] = useState('');
   const [rsaEncrypted, setRsaEncrypted] = useState("");
   const [rsaDecrypted, setRsaDecrypted] = useState("");
 
@@ -27,6 +28,25 @@ export default function App() {
       alert(`Encryption Failed: ${JSON.stringify(e)}`);
     }
   };
+
+  const decryptFromSeverWithSymmKey = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/decryptWithSymmKey", {
+        method: "POST",
+        body: JSON.stringify({
+          symmKey: key,
+          tag: tag,
+          iv: nonce,
+          encrypted: encrypted
+        })
+      });
+
+      const decryptedText = await response.text();
+      setDecrypted(decryptedText);
+    } catch (error) {
+      alert(error);
+    }
+  }
 
   const decryptText = async () => {
     try {
@@ -53,7 +73,7 @@ export default function App() {
   const encryptWithPublicKey = async () => {
     try{
       let publicKey = await getPublicKey();
-      const result = await ExpoEncryptor.encryptWithPublicKey(publicKey, text);
+      const result = await ExpoEncryptor.encryptWithPublicKey(publicKey, secondText);
       setRsaEncrypted(result);
     } catch(error) {
       alert(error);
@@ -90,7 +110,8 @@ export default function App() {
 
   return (
     <SafeAreaView>
-      {/* <View style={{ padding: 20 }}>
+      <ScrollView>
+      <View style={{ padding: 20 }}>
         <TextInput
           style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
           placeholder="Enter text to encrypt"
@@ -106,22 +127,18 @@ export default function App() {
         <Button title="Encrypt" onPress={encryptText} />
         <Text>Encrypted: {encrypted}</Text>
         <Button title="Decrypt" onPress={decryptText} />
+        <Button title="DecryptInServer" onPress={decryptFromSeverWithSymmKey} />
         <Text>Decrypted: {decrypted}</Text>
-      </View> */}
+      </View>
+
       <View style={{ padding: 20 }}>
         <Text> Public key encryption</Text>
         {/* <Text> Public Key {publicKey == '' ? "not ": ""} recieved</Text>r */}
         <TextInput
           style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
           placeholder="Enter text to encrypt"
-          onChangeText={setText}
-          value={text}
-        />
-        <TextInput
-          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-          placeholder="Enter symmetric key (optional)"
-          onChangeText={setKey}
-          value={key}
+          onChangeText={setSecondText}
+          value={secondText}
         />
         <Button title="EncryptWithPublicKey" onPress={encryptWithPublicKey} />
         <Text>Encrypted:</Text>
@@ -139,7 +156,7 @@ export default function App() {
         <Button title="Encrypt in server" onPress={encryptInServer}/>
       </View>
 
-
+      </ScrollView>
     </SafeAreaView >
   );
 }

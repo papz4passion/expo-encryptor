@@ -21,9 +21,9 @@ public class ExpoEncryptorModule: Module {
             }
         }
         
-        AsyncFunction("decryptWithSymmKey") { (encryptedText: String, nonceHexString: String, symmetricKeyString: String, tag: String, promise: Promise) in
+        AsyncFunction("decryptWithSymmKey") { (encryptedText: String, nonceBase64String: String, symmetricKeyString: String, tag: String, promise: Promise) in
             do {
-                let result = try CoreCryptor.decryptText(encryptedText: encryptedText, nonceHexString: nonceHexString, symmetricKeyString: symmetricKeyString, tag: tag)
+                let result = try CoreCryptor.decryptText(encryptedText: encryptedText, nonceBase64String: nonceBase64String, symmetricKeyString: symmetricKeyString, tag: tag)
                 promise.resolve(result)
             } catch {
                 promise.reject(error)

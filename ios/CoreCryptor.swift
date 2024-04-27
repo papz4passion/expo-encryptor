@@ -48,18 +48,18 @@ class CoreCryptor: NSObject {
         let keyString = symmetricKey.withUnsafeBytes {
             Data(Array($0)).base64EncodedString()
         }
-        let tag = encrypted.tag.toHexString()
-        let nonceString = Data(nonce).toHexString()
+        let tag = encrypted.tag.base64EncodedString()
+        let nonceString = Data(nonce).base64EncodedString()
         let encryptedTextString = encrypted.ciphertext.base64EncodedString()
         
         return ["key": keyString, "tag": tag, "nonce": nonceString, "encryptedText": encryptedTextString]
     }
     
     // Function that decrypts text
-    class func decryptText(encryptedText: String, nonceHexString: String, symmetricKeyString: String, tag: String) throws -> String {
+    class func decryptText(encryptedText: String, nonceBase64String: String, symmetricKeyString: String, tag: String) throws -> String {
         // Convert nonce and encrypted text from hex/base64 strings to Data
-        guard let nonceData = Data(hexString: nonceHexString),
-              let tag = Data(hexString: tag),
+        guard let nonceData = Data(base64Encoded: nonceBase64String),
+              let tag = Data(base64Encoded: tag),
               let nonce = try? AES.GCM.Nonce(data: nonceData),
               let encryptedData = Data(base64Encoded: encryptedText),
               let keyData = Data(base64Encoded: symmetricKeyString),
