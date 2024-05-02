@@ -4,18 +4,18 @@ import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-cor
 // and on native platforms to ExpoEncryptor.ts
 import ExpoEncryptorModule from './ExpoEncryptorModule';
 import ExpoEncryptorView from './ExpoEncryptorView';
-import { ExpoEncryptorViewProps, ExpoEncryptorEncryptionResult } from './ExpoEncryptor.types';
+import { ExpoEncryptorViewProps, ExpoEncryptorEncryptionResult, ExpoEncryptorEncryptionGenericResult } from './ExpoEncryptor.types';
 
-export async function encryptWithSymmKey(key: any, plainText: string): Promise<ExpoEncryptorEncryptionResult> {
-  return await ExpoEncryptorModule.encryptWithSymmKey(key, plainText);
+export function encryptWithSymmKey(key: any, plainText: string): ExpoEncryptorEncryptionResult {
+  return ExpoEncryptorModule.encryptWithSymmKey(key, plainText);
 }
 
-export async function decryptWithSymmKey(encryptedText: string, ivString: string, symmKey: string, tag: string): Promise<string> {
-  return await ExpoEncryptorModule.decryptWithSymmKey(encryptedText, ivString, symmKey, tag);
+export function decryptWithSymmKey(encryptedText: string, ivString: string, symmKey: string, tag: string): ExpoEncryptorEncryptionGenericResult {
+  return ExpoEncryptorModule.decryptWithSymmKey(encryptedText, ivString, symmKey, tag);
 }
 
-export async function encryptWithPublicKey(key: string, plainText: string): Promise<string> {
-  return await ExpoEncryptorModule.encryptWithPublicKey(key, plainText);
+export function encryptWithPublicKey(key: string, plainText: string): ExpoEncryptorEncryptionGenericResult {
+  return ExpoEncryptorModule.encryptWithPublicKey(key, plainText);
 }
 
 export { ExpoEncryptorView, ExpoEncryptorViewProps };

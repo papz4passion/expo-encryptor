@@ -12,30 +12,30 @@ public class ExpoEncryptorModule: Module {
         Name("ExpoEncryptor")
         
         // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-        AsyncFunction("encryptWithSymmKey") { (key: String?, message: String, promise: Promise) in
+        Function("encryptWithSymmKey") { (key: String?, message: String) in
             do {
-                let result = try CoreCryptor.encryptText(symmetricKeyString: key, plaintext: message)
-                promise.resolve(result)
+                let result = try CoreCryptor.encryptText(symmetricKeyString: key, plaintext: message) as [String: String]
+                return result
             } catch {
-                promise.reject(error)
+                return ["error": error.localizedDescription]
             }
         }
         
-        AsyncFunction("decryptWithSymmKey") { (encryptedText: String, nonceBase64String: String, symmetricKeyString: String, tag: String, promise: Promise) in
+        Function("decryptWithSymmKey") { (encryptedText: String, nonceBase64String: String, symmetricKeyString: String, tag: String) in
             do {
-                let result = try CoreCryptor.decryptText(encryptedText: encryptedText, nonceBase64String: nonceBase64String, symmetricKeyString: symmetricKeyString, tag: tag)
-                promise.resolve(result)
+                let result: String = try CoreCryptor.decryptText(encryptedText: encryptedText, nonceBase64String: nonceBase64String, symmetricKeyString: symmetricKeyString, tag: tag)
+                return ["data": result]
             } catch {
-                promise.reject(error)
+                return ["error": error.localizedDescription]
             }
         }
         
-        AsyncFunction("encryptWithPublicKey") { (key: String, message: String, promise: Promise) in
+        Function("encryptWithPublicKey") { (key: String, message: String) in
             do {
-                let result = try CoreCryptor.encryptWithPublicKey(plainText: message, publicKeyString: key)
-                promise.resolve(result)
+                let result: String = try CoreCryptor.encryptWithPublicKey(plainText: message, publicKeyString: key)
+                return ["data": result]
             } catch {
-                promise.reject(error)
+                return ["error": error.localizedDescription]
             }
         }
         

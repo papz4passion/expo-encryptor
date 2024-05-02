@@ -18,7 +18,7 @@ export default function App() {
 
   const encryptText = async () => {
     try {
-      const result = await ExpoEncryptor.encryptWithSymmKey(key || null, text);
+      const result = ExpoEncryptor.encryptWithSymmKey(key.length > 0 ? key : null, text);
       setEncrypted(result.encryptedText);
       setNonce(result.nonce);
       setKey(result.key);
@@ -34,7 +34,7 @@ export default function App() {
       const response = await fetch("http://localhost:8080/decryptWithSymmKey", {
         method: "POST",
         body: JSON.stringify({
-          symmKey: key,
+          symmKey: rsaDecrypted,
           tag: tag,
           iv: nonce,
           encrypted: encrypted
@@ -50,8 +50,8 @@ export default function App() {
 
   const decryptText = async () => {
     try {
-      const plaintext = await ExpoEncryptor.decryptWithSymmKey(encrypted, nonce, key, tag);
-      setDecrypted(plaintext);
+      const plaintext = ExpoEncryptor.decryptWithSymmKey(encrypted, nonce, rsaDecrypted, tag);
+      setDecrypted(plaintext.data ? plaintext.data : "");
       alert('Decryption Successful');
     } catch (e) {
       alert(`Decryption Failed: ${JSON.stringify(e)}`);
@@ -73,8 +73,8 @@ export default function App() {
   const encryptWithPublicKey = async () => {
     try{
       let publicKey = await getPublicKey();
-      const result = await ExpoEncryptor.encryptWithPublicKey(publicKey, secondText);
-      setRsaEncrypted(result);
+      const result = ExpoEncryptor.encryptWithPublicKey(publicKey, key);
+      setRsaEncrypted(result.data ? result.data : "");
     } catch(error) {
       alert(error);
     }

@@ -8,3 +8,8 @@ export type ExpoEncryptorEncryptionResult = {
   key: string;
   tag: string;
 }
+
+export type ExpoEncryptorEncryptionGenericResult = {
+  data?: string;
+  error?: string;
+}
